@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<style>
+		div.gap {
+			height: 5px;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>發表一篇圖文</h1>
+	<form>
+		<label for="text">文字內容</label>
+		<input type="text" name="text" id="text">
+		<div class="gap"></div>
+		<label for="image">圖片檔案</label>
+		<input type="file" name="image" id="image" accept="image/png, image/jpeg">
+		<div class="gap"></div>
+		<button>送出</button>
+	</form>
+	<hr>
+
+	<script>
+		let form = document.querySelector("form");
+		form.addEventListener("submit", async function (event) {
+			event.preventDefault();
+			let submitter = form.querySelector("button");
+			let formData = new FormData(this, submitter);
+			let url = "/article";
+			let init = {
+				method: "POST",
+				body: formData,
+			};
+			let request = new Request(url, init);
+			let res = await fetch(request);
+			let resData = await res.json();
+			console.log(resData);
+		});
+	</script>
+</body>
+
+</html>
