@@ -9,6 +9,10 @@
 		div.gap {
 			height: 5px;
 		}
+
+		.article>img {
+			max-height: 200px;
+		}
 	</style>
 </head>
 
@@ -23,9 +27,34 @@
 		<div class="gap"></div>
 		<button>送出</button>
 	</form>
+	<div class="gap"></div>
+	<button class="del">刪除</button>
 	<hr>
 
 	<script>
+		function printArticle(text, image) {
+			let para = document.createElement("p");
+			let img = document.createElement("img");
+			let hr = document.createElement("hr");
+			let article = document.createElement("div");
+			para.textContent = text;
+			img.src = image;
+			article.className = "article";
+			article.appendChild(para);
+			article.appendChild(img);
+			article.appendChild(hr);
+			document.body.appendChild(article);
+		}
+
+		init();
+		async function init() {
+			let res = await fetch("/article");
+			let resData = await res.json();
+			for (data of resData) {
+				printArticle(data[1], data[2]);
+			}
+		}
+
 		let form = document.querySelector("form");
 		form.addEventListener("submit", async function (event) {
 			event.preventDefault();
@@ -39,7 +68,21 @@
 			let request = new Request(url, init);
 			let res = await fetch(request);
 			let resData = await res.json();
-			console.log(resData);
+			if (resData.imageURL != null) {
+				printArticle(resData.text, resData.imageURL);
+			}
+		});
+
+		let delBtn = document.querySelector(".del");
+		delBtn.addEventListener("click", async function () {
+			let url = "/article";
+			let init = {
+				method: "DELETE"
+			};
+			let request = new Request(url, init);
+			let res = await fetch(request);
+			let resData = await res.json();
+			location.href = "/";
 		});
 	</script>
 </body>
